@@ -14,7 +14,7 @@ setup(
     packages=['wordbatch',
               'wordbatch.extractors',
               'wordbatch.models'
-    ],    
+    ],
 
     license='GNU GPL 2.0',
     classifiers=[
@@ -27,40 +27,40 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    install_requires=['cython', 'scikit-learn', 'python-Levenshtein', 'py-lz4framed'], 
+    install_requires=['cython', 'scikit-learn', 'python-Levenshtein', 'py-lz4framed'],
     extras_require={'dev': ['nltk', 'textblob', 'keras', 'pandas', 'pyspark']},
-    
-        
+
+
     cmdclass= {'build_ext': build_ext},
     ext_modules= [Extension("wordbatch.extractors.extractors",
                             ["wordbatch/extractors/extractors.pyx", "wordbatch/extractors/MurmurHash3.cpp"],
                             libraries= [],
                             include_dirs=[numpy.get_include(), '.'],
                             extra_compile_args = ["-O3", "-ffast-math"],
-                            extra_link_args=['-fopenmp']),
+                            extra_link_args=['/openmp']),
                   Extension("wordbatch.models.ftrl",
                             ["wordbatch/models/ftrl.pyx"],
                             libraries= [],
                             include_dirs=[numpy.get_include(), '.'],
-                            extra_compile_args = ["-O3", "-fopenmp", "-ffast-math"],
-                            extra_link_args=['-fopenmp']),
+                            extra_compile_args = ["-O3", "/openmp", "-ffast-math"],
+                            extra_link_args=['/openmp']),
                   Extension("wordbatch.models.fm_ftrl",
                             ["wordbatch/models/fm_ftrl.pyx"],
                             libraries= [],
                             include_dirs=[numpy.get_include(), '.'],
-                            extra_compile_args = ["-O3", "-fopenmp", "-ffast-math"],
-                            extra_link_args=['-fopenmp']),
+                            extra_compile_args = ["-O3", "/openmp", "-ffast-math"],
+                            extra_link_args=['/openmp']),
                   Extension("wordbatch.models.nn_relu_h1",
                             ["wordbatch/models/nn_relu_h1.pyx"],
                             libraries= [],
                             include_dirs=[numpy.get_include(), '.'],
-                            extra_compile_args = ["-O3", "-fopenmp", "-ffast-math"],
-                            extra_link_args=['-fopenmp']),
+                            extra_compile_args = ["-O3", "/openmp", "-ffast-math"],
+                            extra_link_args=['/openmp']),
                   Extension("wordbatch.models.nn_relu_h2",
                             ["wordbatch/models/nn_relu_h2.pyx"],
                             libraries= [],
                             include_dirs=[numpy.get_include(), '.'],
-                            extra_compile_args = ["-O3", "-fopenmp", "-ffast-math"],
-                            extra_link_args=['-fopenmp'])
+                            extra_compile_args = ["-O3", "/openmp", "-ffast-math"],
+                            extra_link_args=['/openmp'])
         ]
 )

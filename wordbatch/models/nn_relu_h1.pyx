@@ -16,9 +16,9 @@ cdef double inv_link_f(double e, int inv_link) nogil:
 	if inv_link==1:  return 1.0 / (1.0 + exp(-fmax(fmin(e, 35.0), -35.0)))
 	return e
 
-cdef double predict_single(int* inds, double* vals, int lenn, unsigned int D, unsigned int D_nn,
+cdef double predict_single(int* inds, double* vals, int lenn, int D, int D_nn,
 				double* w0, double* w1, double* z, int threads) nogil:
-	cdef unsigned int j, i, ii, DD_nn= D*D_nn
+	cdef int j, i, ii, DD_nn= D*D_nn
 	cdef double p, v, zj
 	p= w1[D_nn]
 	for j in prange(D_nn, nogil=True, num_threads= threads):
@@ -31,9 +31,9 @@ cdef double predict_single(int* inds, double* vals, int lenn, unsigned int D, un
 			p+= w1[j] * zj
 	return p
 
-cdef void update_single(int* inds, double* vals, int lenn, unsigned int D, unsigned int D_nn, double e, double alpha,
+cdef void update_single(int* inds, double* vals, int lenn, int D, int D_nn, double e, double alpha,
 		   				double L2,  double* w0, double* w1, double* z, double* c0, double* c1, int threads) nogil:
-	cdef unsigned int i, ii, j, DD_nn= D*D_nn, iDnnj
+	cdef int i, ii, j, DD_nn= D*D_nn, iDnnj
 	cdef double dldy= e, dldz, dldw1, dldw0
 	w1[D_nn]-= (dldy+ L2 * w1[D_nn]) * alpha
 	#for j in prange(D_nn, nogil=True, num_threads=threads):
@@ -61,8 +61,8 @@ cdef class NN_ReLU_H1:
 
 	cdef unsigned int threads
 	cdef unsigned int iters
-	cdef unsigned int D
-	cdef unsigned int D_nn
+	cdef int D
+	cdef int D_nn
 	cdef double init_nn
 
 	cdef double L2
@@ -75,8 +75,8 @@ cdef class NN_ReLU_H1:
 				 double alpha=0.1,
 				 double L2=0.001,
 			   	 double e_noise=0.0001,
-				 unsigned int D=2**25,
-				 unsigned int D_nn=40,
+				 int D=2**25,
+				 int D_nn=40,
 				 double init_nn=0.01,
 				 unsigned int iters=1,
 				 inv_link= "sigmoid",
@@ -114,7 +114,7 @@ cdef class NN_ReLU_H1:
 		p= np.zeros(X_indptr.shape[0]-1, dtype= np.float64)
 		cdef double *w0= &self.w0[0], *w1= &self.w1[0], *z= &self.z[0]
 		cdef double[:] pp= p
-		cdef unsigned int lenn, D= self.D, D_nn= self.D_nn, row_count= X_indptr.shape[0]-1, row, ptr
+		cdef int lenn, D= self.D, D_nn= self.D_nn, row_count= X_indptr.shape[0]-1, row, ptr
 		for row in range(row_count):
 			ptr= X_indptr[row]
 			lenn= X_indptr[row + 1] - ptr

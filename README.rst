@@ -30,7 +30,7 @@ Wordbatch is written with Cython, and uses concurrent threading, multiprocessing
 
 Requirements
 ============
-Linux. Python 2.7/3.6
+Windows. Python 3.5/3.6
 
 Installation
 ============

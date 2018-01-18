@@ -26,8 +26,8 @@ cdef double predict_single(int* inds, double* vals, int lenn,
 						   double L1, double baL2, double ialpha, double beta,
 						   double* w, double* z, double* n,
 						   double* w_fm, double* z_fm, double* n_fm, double weight_fm,
-						   unsigned int D_fm, bint bias_term, int threads):
-	cdef unsigned int i, ii, k
+						   int D_fm, bint bias_term, int threads):
+	cdef int i, ii, k
 	cdef double sign, zi, d, wi, wi2, wfmk, e= 0.0, e2= 0.0
 
 	if bias_term:
@@ -59,8 +59,8 @@ cdef void update_single(int* inds, double* vals, int lenn, double e,
 						double ialpha, double* w, double* z, double* n,
 						double alpha_fm, double L2_fm,
 					    double* w_fm, double* z_fm, double* n_fm,
-					    unsigned int D_fm, bint bias_term, int threads) nogil:
-	cdef unsigned int i, ii, k
+					    int D_fm, bint bias_term, int threads) nogil:
+	cdef int i, ii, k
 	cdef double g, g2, ni, v, lr, e2= e**2, reg, L2_fme= L2_fm / e
 	cdef double *z_fmi
 	if bias_term: #Update bias with FTRL-proximal

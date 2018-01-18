@@ -16,9 +16,9 @@ cdef double inv_link_f(double e, int inv_link) nogil:
 	if inv_link==1:  return 1.0 / (1.0 + exp(-fmax(fmin(e, 35.0), -35.0)))
 	return e
 
-cdef double predict_single(int* inds, double* vals, int lenn, unsigned int D, unsigned int D_nn, unsigned int D_nn2,
+cdef double predict_single(int* inds, double* vals, int lenn,  int D,  int D_nn,  int D_nn2,
 				double* w0, double* w1, double* w2, double* z1, double* z2, int threads) nogil:
-	cdef unsigned int i, ii, j, k, DD_nn= D*D_nn, DD_nn2= D_nn*D_nn2
+	cdef  int i, ii, j, k, DD_nn= D*D_nn, DD_nn2= D_nn*D_nn2
 	cdef double p, v, z1j, z2k
 	p= w2[D_nn2]
 	for k in prange(D_nn2, nogil=True, num_threads= threads):
@@ -37,10 +37,10 @@ cdef double predict_single(int* inds, double* vals, int lenn, unsigned int D, un
 			p+= w2[k] * z2k
 	return p
 
-cdef void update_single(int* inds, double* vals, int lenn, unsigned int D, unsigned int D_nn, unsigned int D_nn2,
+cdef void update_single(int* inds, double* vals, int lenn,  int D,  int D_nn,  int D_nn2,
 						double e, double alpha, double L2, double* w0, double* w1, double* w2, double* z1,
 					   	double* z2, double* c0, double* c1, double* c2, int threads) nogil:
-	cdef unsigned int i, ii, j, k, DD_nn= D*D_nn, DD_nn2= D_nn*D_nn2
+	cdef  int i, ii, j, k, DD_nn= D*D_nn, DD_nn2= D_nn*D_nn2
 	cdef double dldy= e, dldz1, dldz2, dldw0, dldw1, dldw2
 	w2[D_nn2]-= (dldy + L2 *w2[D_nn2]) * alpha
 	for k in range(D_nn2):
@@ -75,9 +75,9 @@ cdef class NN_ReLU_H2:
 
 	cdef unsigned int threads
 	cdef unsigned int iters
-	cdef unsigned int D
-	cdef unsigned int D_nn
-	cdef unsigned int D_nn2
+	cdef  int D
+	cdef  int D_nn
+	cdef  int D_nn2
 	cdef double init_nn
 
 	cdef double L2
@@ -90,9 +90,9 @@ cdef class NN_ReLU_H2:
 				 double alpha=0.1,
 				 double L2=0.001,
 			   	 double e_noise=0.001,
-				 unsigned int D=2**25,
-				 unsigned int D_nn=40,
-				 unsigned int D_nn2=40,
+				  int D=2**25,
+				  int D_nn=40,
+				  int D_nn2=40,
 				 double init_nn=0.0001,
 				 unsigned int iters=1,
 				 inv_link= "sigmoid",
@@ -137,7 +137,7 @@ cdef class NN_ReLU_H2:
 		p= np.zeros(X_indptr.shape[0]-1, dtype= np.float64)
 		cdef double *w0= &self.w0[0], *w1= &self.w1[0], *w2= &self.w2[0], *z1= &self.z1[0], *z2= &self.z2[0]
 		cdef double[:] pp= p
-		cdef unsigned int lenn, D= self.D, D_nn= self.D_nn, D_nn2= self.D_nn2, row_count= X_indptr.shape[0]-1, row, ptr
+		cdef int lenn, D= self.D, D_nn= self.D_nn, D_nn2= self.D_nn2, row_count= X_indptr.shape[0]-1, row, ptr
 		for row in range(row_count):
 			ptr= X_indptr[row]
 			lenn= X_indptr[row + 1] - ptr
